@@ -1,0 +1,8 @@
+/tmp/ks_khel/IRMAv0.6.1/irma-test-T4N2OiVSBR47kipL6iLktK9I2aKZNYvW/A_HA_H1.bam:
+/tmp/ks_khel/IRMAv0.6.1/irma-test-T4N2OiVSBR47kipL6iLktK9I2aKZNYvW/A_MP.bam:
+/tmp/ks_khel/IRMAv0.6.1/irma-test-T4N2OiVSBR47kipL6iLktK9I2aKZNYvW/A_NA_N1.bam:
+/tmp/ks_khel/IRMAv0.6.1/irma-test-T4N2OiVSBR47kipL6iLktK9I2aKZNYvW/A_NP.bam:
+/tmp/ks_khel/IRMAv0.6.1/irma-test-T4N2OiVSBR47kipL6iLktK9I2aKZNYvW/A_NS.bam:
+/tmp/ks_khel/IRMAv0.6.1/irma-test-T4N2OiVSBR47kipL6iLktK9I2aKZNYvW/A_PA.bam:
+/tmp/ks_khel/IRMAv0.6.1/irma-test-T4N2OiVSBR47kipL6iLktK9I2aKZNYvW/A_PB1.bam:
+/tmp/ks_khel/IRMAv0.6.1/irma-test-T4N2OiVSBR47kipL6iLktK9I2aKZNYvW/A_PB2.bam:
