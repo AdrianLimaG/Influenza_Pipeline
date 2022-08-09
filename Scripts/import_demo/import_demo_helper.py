@@ -17,8 +17,13 @@ class demographics_import():
     
     def get_lims_demographics(self,hsn): #1
         #HSN_WGSRUNDATE_INDEX_
+        date= hsn[0].split("_")[1]
+        self.wgs_run_date = date
+     
         #making sure only HSN and cutting other stuff in the array
-        hsn = [i.split("_")[0] for i in hsn]    
+        hsn = [i.split("_")[0] for i in hsn]
+   
+        
         self.df_hsn = pd.DataFrame(hsn,columns=["hsn"])
         #this will need be a variable i m thinking a jason file that will also feed into msql class
         conn = co.connect(self.lims_connection)
@@ -26,7 +31,8 @@ class demographics_import():
         query="select * from wgsdemographics where HSN in ("+",".join(hsn)+")"
 
         self.lims_df = pd.read_sql(query,conn)
-
+        #print("current lims output")
+        #print(self.lims_df)
         conn.close()
     
     def format_lims_df(self): #2
@@ -42,12 +48,12 @@ class demographics_import():
         self.df = pd.merge(self.lims_df, self.df_hsn, how="right", on="hsn")
         #self.log.write_log("merge_dfs","Done")
     
-    def format_dfs(self, runId): #3 
+    def format_dfs(self): #3 
 
         #self.log.write_log("format_dfs","Starting")
         # get the date for wgs_run_date column
         #not run ID but possibly file name
-        self.wgs_run_date = datetime.datetime.strptime(runId, '%Y-%m-%d').strftime("%m/%d/%Y")
+        
 
         # format columns, insert necessary values
         #self.log.write_log("format_dfs","Adding/Formatting/Sorting columns")
@@ -65,8 +71,10 @@ class demographics_import():
         #self.log.write_log("database_push","Starting")
         self.setup_db()
         df_demo_lst = self.df.values.astype(str).tolist()
-        df_table_col_query = "(" + ", ".join(self.df.columns.astype(str).tolist()) + ")"
-        self.write_query_tbl1 = self.write_query_tbl1.replace("{df_table_col_query}", df_table_col_query)
+        #df_table_col_query = "(" + ", ".join(self.df.columns.astype(str).tolist()) + ")"
+        
+        self.write_query_tbl1 = (" ").join(self.write_query_tbl1)
+   
         self.db_handler.lst_ptr_push(df_lst=df_demo_lst, query=self.write_query_tbl1)
         #self.log.write_log("database_push","Done!`")
 

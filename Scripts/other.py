@@ -12,10 +12,13 @@ def merge_dataframes(df1=None, df2=None, df1_drop=None, df_final_drop=None, join
         join_dict[col] = 'str'
     df1 = df1.astype(join_dict)
     df2 = df2.astype(join_dict)
+
     df1.drop(labels=df1_drop, axis=1, inplace=True)
+
     #df1.drop_duplicates(subset=['hsn'], inplace=True)
-    df_final = df2.merge(df1, how=join_type, on=join_lst)
+    df_final = df2.merge(df1, how=join_type, on='hsn')
     df_final.drop(labels=df_final_drop, axis=1, inplace=True)
+
     return df_final
 
 

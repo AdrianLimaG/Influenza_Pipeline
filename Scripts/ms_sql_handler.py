@@ -96,7 +96,9 @@ class ms_sql_handler():
         """
         local_query = query
         # connect to db
+        print("trying to connect to sql")
         with self.engine.connect() as conn:
+            print("connection passed!")
             # generate a distinct query for every row, where query stores the
             # generic value
             for i in range(len(df_lst)):
@@ -122,6 +124,7 @@ class ms_sql_handler():
                 
                 # new_query stores distinct query for the corresponding row
                 new_query = local_query
+
                 if full:
                     new_query = new_query.replace("{df_table_col_query}", df_table_col_query)
                 # find all unique occurrances of '{/d}' and add them to a list
