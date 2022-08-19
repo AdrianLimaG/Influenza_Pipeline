@@ -10,6 +10,7 @@ import sys
 def pipeline(minion_path,sample_sheet_p): #variables, analysis_working_dir, final_out_dir, nextclade_output
     
     res_dir= "/home/ssh_user/FLU_WGS_Sequencing/IRMA/" #this will need a permant address
+    res_dir= "/home/ks_khel/Desktop/RES/"
 
     dir_path = "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[:-1]) #path minus scripts 
 
@@ -20,9 +21,10 @@ def pipeline(minion_path,sample_sheet_p): #variables, analysis_working_dir, fina
 
     print("Merging Completing")
 
+    fastq_paths_dic={"2225102_060722_01" : "","2225196_060722_02" :""}
 
     #Step 2 run irma for allignment
-   # irma_runner(fastq_paths_dic,dir_path,res_dir) 
+    irma_runner(fastq_paths_dic,dir_path,res_dir) 
     #in the future function after IRMA will return String with where the files have been moved to
     print("IRMA Completing")
 
@@ -35,12 +37,14 @@ def pipeline(minion_path,sample_sheet_p): #variables, analysis_working_dir, fina
 
 
     #Step 4 run nextclade and return hits
-    results=nextclade_runner([*fastq_paths_dic],res_dir,dir_path,nextclade_output)
+    #results=nextclade_runner([*fastq_paths_dic],res_dir,dir_path,nextclade_output)
     
     print("Nextclade Completed")
 
-    #next step is convert nexclade 
-    #returns a dict of [] with hits {samplename:[virusname,virusnmae]}
+
+    #next thing to do is to create GISAID Reports 
+    #and variant reports
+    
 
 
 

@@ -132,6 +132,8 @@ dmypy.json
 # Extras
 data/demographics.json
 data/nextclade.json
+data/gisaid.json
+data/sample_metrics.json
 Scripts/__pycache__/
 Scripts/import_demo/__pycache__/
 Scripts/irma/__pycache__/
