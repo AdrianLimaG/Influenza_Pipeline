@@ -14,6 +14,5 @@ def run_import_demo(runner_path,sample_hsn):
     import_demo.format_dfs()
 
     import_demo.database_push()
-    print("import demos done")
 
-    
+    print("import demos done")

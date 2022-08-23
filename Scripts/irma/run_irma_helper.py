@@ -32,13 +32,18 @@ def sample_metrics(list_samples,sample_path,resource_path):
     #This functions calculates WGS depth + coverage an anverage across all aligned proteins
     #And Captures this for each protein and writes it to a json file
     samtools_path = resource_path+"/resources/samtools/bin/samtools coverage "
-    coverage={} #return vaule containing key being sample_name
+   # coverage={} #return vaule containing key being sample_name
+    c2=[]
     #coverage = { "Sample1": {"WGS_Coverage": xx, "WGS_Depth": xx, "HA_Coverage": xx , "HA_Depth" : xx}     }
     
     for sample in list_samples:
-        coverage[sample] = {}
+        
         temp_depth=[]
         temp_coverage=[]
+        hsn= sample.split("_")[0]
+        temp_dict ={"hsn": hsn}
+        #coverage[hsn] = {}
+        #[]
         for protein in ["A_HA_H3.bam","A_MP.bam","A_NA_N2.bam","A_NP.bam","A_NS.bam","A_PA.bam","A_PB1.bam","A_PB2.bam"] :
 
             if os.path.exists(sample_path+"/"+sample+"/"+protein):
@@ -46,26 +51,31 @@ def sample_metrics(list_samples,sample_path,resource_path):
                 out_put=subprocess.run(samtools_path+sample_path+sample+"/"+protein, capture_output=True, text=True, shell=True)
 
                 data= out_put.stdout.split("\n")[1].split("\t")
-
-                coverage[sample][protein[2:-4]+"_avg_depth"] = int(round(float(data[6])))
-                coverage[sample][protein[2:-4]+"_coverage"] = int(data[5])
+                temp_dict[protein[2:-4]+"_avg_depth"] = int(round(float(data[6])))
+                temp_dict[protein[2:-4]+"_coverage"] = int(data[5])
+                #coverage[hsn][protein[2:-4]+"_avg_depth"] = int(round(float(data[6])))
+                #coverage[hsn][protein[2:-4]+"_coverage"] = int(data[5])
                 temp_depth.append(int(round(float(data[6]))))
                 temp_coverage.append(int(data[5]))
 
             else:
                 print("sample "+sample+" has no bam file for protein "+ protein)  #should be written to a file  
-                coverage[sample][protein[2:-4]+"_avg_depth"] = 0
-                coverage[sample][protein[2:-4]+"_coverage"] = 0
+                temp_dict[protein[2:-4]+"_avg_depth"] = 0
+                temp_dict[protein[2:-4]+"_coverage"] = 0
+               # coverage[hsn][protein[2:-4]+"_avg_depth"] = 0
+               # coverage[hsn][protein[2:-4]+"_coverage"] = 0
                 temp_depth.append(0)
                 temp_coverage.append(0)
                 
-
-        coverage[sample]["percent_cvg"]= sum(temp_coverage)/len(temp_coverage)
-        coverage[sample]["avg_depth"]= sum(temp_depth)/len(temp_depth)
+        temp_dict["percent_cvg"]= sum(temp_coverage)/len(temp_coverage)
+        temp_dict["avg_depth"]= sum(temp_depth)/len(temp_depth)
+        #coverage[hsn]["percent_cvg"]= sum(temp_coverage)/len(temp_coverage)
+        #coverage[hsn]["avg_depth"]= sum(temp_depth)/len(temp_depth)
+        c2.append(temp_dict)
         
     
     #print(coverage)
-    return coverage
+    return c2
 
             
 

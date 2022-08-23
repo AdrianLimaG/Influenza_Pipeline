@@ -4,6 +4,7 @@ import cx_Oracle as co
 import reader
 import datetime
 from other import add_cols
+import json
 
 class demographics_import():
 
@@ -13,6 +14,8 @@ class demographics_import():
         demo_cahce= reader.read_json(cache_path+"/data/demographics.json")
         for item in [*demo_cahce] :
             setattr(self,item, demo_cahce[item])
+        #and import metric data needed
+        self.df_hsn = pd.read_json(cache_path+"/data/sample_metrics.json")
         
     
     def get_lims_demographics(self,hsn): #1
@@ -23,8 +26,7 @@ class demographics_import():
         #making sure only HSN and cutting other stuff in the array
         hsn = [i.split("_")[0] for i in hsn]
    
-        
-        self.df_hsn = pd.DataFrame(hsn,columns=["hsn"])
+        #self.df_hsn = pd.DataFrame(hsn,columns=["hsn"]) #<-could be defined else where, 
         #this will need be a variable i m thinking a jason file that will also feed into msql class
         conn = co.connect(self.lims_connection)
 
@@ -51,10 +53,6 @@ class demographics_import():
     def format_dfs(self): #3 
 
         #self.log.write_log("format_dfs","Starting")
-        # get the date for wgs_run_date column
-        #not run ID but possibly file name
-        
-
         # format columns, insert necessary values
         #self.log.write_log("format_dfs","Adding/Formatting/Sorting columns")
 
@@ -81,6 +79,7 @@ class demographics_import():
     def setup_db(self):
         self.db_handler = ms_sql_handler(self)
         self.db_handler.establish_db()
+    
 
 
 

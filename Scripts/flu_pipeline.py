@@ -17,7 +17,7 @@ def pipeline(minion_path,sample_sheet_p): #variables, analysis_working_dir, fina
     nextclade_output= "/home/ssh_user/FLU_WGS_Sequencing/Nextclade"
     
     #Step 1 merge  fasta files
-    #fastq_paths_dic = merge_seq_fastq(minion_path,sample_sheet_p)
+    fastq_paths_dic = merge_seq_fastq(minion_path,sample_sheet_p)
 
     print("Merging Completing")
 
@@ -33,11 +33,11 @@ def pipeline(minion_path,sample_sheet_p): #variables, analysis_working_dir, fina
     #Now will need to import demographics from horizon to our local db
     #Step 3 Import Demographics
     #has to be done at this step because this after HSN has been mapped
-    #run_import_demo(dir_path,[*fastq_paths_dic])
+    run_import_demo(dir_path,[*fastq_paths_dic])
 
 
     #Step 4 run nextclade and return hits
-    #results=nextclade_runner([*fastq_paths_dic],res_dir,dir_path,nextclade_output)
+    results=nextclade_runner([*fastq_paths_dic],res_dir,dir_path,nextclade_output)
     
     print("Nextclade Completed")
 

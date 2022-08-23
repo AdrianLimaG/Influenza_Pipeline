@@ -139,16 +139,3 @@ Scripts/import_demo/__pycache__/
 Scripts/irma/__pycache__/
 Scripts/merge_seq_data/__pycache__/
 Scripts/nextclade/__pycache__/
-khel_wgs_sc2/workflow/outside_lab/__pycache__/
-khel_wgs_sc2/workflow/query/__pycache__/
-khel_wgs_sc2/workflow/refresh/__pycache__/
-khel_wgs_sc2/workflow/WF_1_import_demos/__pycache__/
-khel_wgs_sc2/workflow/WF_2_parse_run_data/__pycache__/
-khel_wgs_sc2/workflow/WF_3_compile_fasta/__pycache__/
-khel_wgs_sc2/workflow/WF_4_parse_nextclade/__pycache__/
-khel_wgs_sc2/workflow/WF_5_parse_pangolin/__pycache__/
-khel_wgs_sc2/workflow/WF_6_build_epi_report/__pycache__/
-khel_wgs_sc2/workflow/WF_7_send_epi_report/__pycache__/
-khel_wgs_sc2/workflow/WF_8_build_nextstrain/__pycache__/
-khel_wgs_sc2/workflow/WF_9_send_fastas/__pycache__/
-khel_wgs_sc2/tests/__pycache__/
