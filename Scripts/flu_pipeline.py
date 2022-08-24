@@ -10,26 +10,26 @@ import sys
 def pipeline(minion_path,sample_sheet_p): #variables, analysis_working_dir, final_out_dir, nextclade_output
     
     res_dir= "/home/ssh_user/FLU_WGS_Sequencing/IRMA/" #this will need a permant address
-    res_dir= "/home/ks_khel/Desktop/RES/"
+   # res_dir= "/home/ks_khel/Desktop/RES/"
 
     dir_path = "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[:-1]) #path minus scripts 
 
     nextclade_output= "/home/ssh_user/FLU_WGS_Sequencing/Nextclade"
     
     #Step 1 merge  fasta files
-    fastq_paths_dic = merge_seq_fastq(minion_path,sample_sheet_p)
+    #fastq_paths_dic = merge_seq_fastq(minion_path,sample_sheet_p)
 
     print("Merging Completing")
 
     fastq_paths_dic={"2225102_060722_01" : "","2225196_060722_02" :""}
 
     #Step 2 run irma for allignment
-    irma_runner(fastq_paths_dic,dir_path,res_dir) 
+    #irma_runner(fastq_paths_dic,dir_path,res_dir) 
     #in the future function after IRMA will return String with where the files have been moved to
     print("IRMA Completing")
 
     #fastq_paths_dic={'2225196': '/home/ks_khel/Desktop/FLU_DATA/barcode02/2225196_combined.fastq.gz', '2231833': '/home/ks_khel/Desktop/FLU_DATA/barcode04/2231833_combined.fastq.gz', '2225102': '/home/ks_khel/Desktop/FLU_DATA/barcode01/2225102_combined.fastq.gz', '2229929': '/home/ks_khel/Desktop/FLU_DATA/barcode05/2229929_combined.fastq.gz', '2225184': '/home/ks_khel/Desktop/FLU_DATA/barcode03/2225184_combined.fastq.gz'}
-    fastq_paths_dic={"2225102_060722_01" : "","2225196_060722_02" :"","2231833_060722_04" :" ","2225184_060722_03" :"",  "2229929_060722_05" :""}
+   # fastq_paths_dic={"2225102_060722_01" : "","2225196_060722_02" :"","2231833_060722_04" :" ","2225184_060722_03" :"",  "2229929_060722_05" :""}
     #Now will need to import demographics from horizon to our local db
     #Step 3 Import Demographics
     #has to be done at this step because this after HSN has been mapped
@@ -37,7 +37,7 @@ def pipeline(minion_path,sample_sheet_p): #variables, analysis_working_dir, fina
 
 
     #Step 4 run nextclade and return hits
-    results=nextclade_runner([*fastq_paths_dic],res_dir,dir_path,nextclade_output)
+    #results=nextclade_runner([*fastq_paths_dic],res_dir,dir_path,nextclade_output)
     
     print("Nextclade Completed")
 

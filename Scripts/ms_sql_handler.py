@@ -129,11 +129,14 @@ class ms_sql_handler():
                     new_query = new_query.replace("{df_table_col_query}", df_table_col_query)
                 # find all unique occurrances of '{/d}' and add them to a list
                 query_track = list(set(re.findall("({.*?})", new_query)))
+                
                 # replace all occurrances of '{\d}' with the corresponding
                 # values in the df_lst
                 try:
                     for item in query_track:
+
                         new_query = new_query.replace(item, df_lst[i][int(item[1:-1])])
+
                 except IndexError:
                     pass
                 # if outside_lab or refresh, we are using full excel file, replace

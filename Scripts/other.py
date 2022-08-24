@@ -39,6 +39,7 @@ def add_cols(obj=None, df=None, col_lst=None, col_func_map=None):
                     df[k] = df.apply(lambda row: globals()[v[0]](row, val), axis=1)
                 except Exception:
                     # use v[1] as a constant argument to the function
+                   
                     df[k] = df.apply(lambda row: globals()[v[0]](row, v[1]), axis=1)
             # no additional variables to supply to apply function
             except IndexError:

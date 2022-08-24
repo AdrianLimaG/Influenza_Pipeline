@@ -16,6 +16,11 @@ class demographics_import():
             setattr(self,item, demo_cahce[item])
         #and import metric data needed
         self.df_hsn = pd.read_json(cache_path+"/data/sample_metrics.json")
+        #df2['year']=df2['year'].astype(int)
+        for df_column in self.df_hsn.columns:
+            self.df_hsn[df_column]=self.df_hsn[df_column].astype(int)
+
+        
         
     
     def get_lims_demographics(self,hsn): #1
@@ -33,8 +38,8 @@ class demographics_import():
         query="select * from wgsdemographics where HSN in ("+",".join(hsn)+")"
 
         self.lims_df = pd.read_sql(query,conn)
-        #print("current lims output")
-        #print(self.lims_df)
+        print("current lims output")
+        print(self.lims_df.to_string())
         conn.close()
     
     def format_lims_df(self): #2
@@ -47,8 +52,11 @@ class demographics_import():
 
     def merge_dfs(self): #3
         #self.log.write_log("merge_dfs","Merging dataframes")
-        self.df = pd.merge(self.lims_df, self.df_hsn, how="right", on="hsn")
-        #self.log.write_log("merge_dfs","Done")
+        self.lims_df['hsn']=self.lims_df['hsn'].astype(int)
+      
+        self.df = pd.merge(self.lims_df, self.df_hsn, how="inner", on="hsn")
+ 
+       #              self.log.write_log("merge_dfs","Done")
     
     def format_dfs(self): #3 
 
@@ -63,12 +71,15 @@ class demographics_import():
 
         # sort/remove columns to match list
         self.df = self.df[self.sample_data_col_order]
+
+
         #self.log.write_log("format_dfs","Done")
     
     def database_push(self): #4
         #self.log.write_log("database_push","Starting")
         self.setup_db()
         df_demo_lst = self.df.values.astype(str).tolist()
+       
         #df_table_col_query = "(" + ", ".join(self.df.columns.astype(str).tolist()) + ")"
         
         self.write_query_tbl1 = (" ").join(self.write_query_tbl1)
