@@ -25,6 +25,10 @@ def run_irma(dic_path_data,path_to_irma):
 def move_results(samples,irma_output_dir,results_dir):
     #IRMA only outputs in IRMA's working directory
     #This function moves the results to there permant home
+    #checking is date folder has been created if not making it
+    if not os.path.exists(results_dir):
+        subprocess.run("mkdir "+results_dir,shell=True)
+
     for sample in samples:
         subprocess.run("mv "+irma_output_dir+"/"+sample+" "+results_dir, shell=True)
 

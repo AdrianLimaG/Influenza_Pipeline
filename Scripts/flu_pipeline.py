@@ -10,12 +10,12 @@ import sys
 def pipeline(minion_path,sample_sheet_p): #variables, analysis_working_dir, final_out_dir, nextclade_output
     
     res_dir= "/home/ssh_user/FLU_WGS_Sequencing/IRMA/" #this will need a permant address
-   # res_dir= "/home/ks_khel/Desktop/RES/"
+    res_dir= "/home/ks_khel/Desktop/RES/"
 
     dir_path = "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[:-1]) #path minus scripts 
 
     nextclade_output= "/home/ssh_user/FLU_WGS_Sequencing/Nextclade"
-    
+    nextclade_output=nextclade_output+"/"+run_date
     #Step 1 merge  fasta files
     #fastq_paths_dic = merge_seq_fastq(minion_path,sample_sheet_p)
 

@@ -7,9 +7,6 @@ import reader
 
 
 
-
-
-
 class gisaid_obj():
     # constructor
     def __init__(self,cache_path):
@@ -21,7 +18,7 @@ class gisaid_obj():
         self.db_handler = ms_sql_handler(self)
         self.db_handler.establish_db()
 
-
+    #removing this function for now, not needed, no samples will be high priority
     def get_priority(self):
         if not self.reportable:
             print("\n==========================================",
@@ -49,6 +46,8 @@ class gisaid_obj():
         self.setup_db()
         self.next_gisaid = int(self.db_handler.ss_read(query=self.read_query_tbl1_max_gisaid).iat[0, 0]) + 1
         prev_week = (datetime.date.today() - datetime.timedelta(days = 31)).strftime("%Y%m%d")
+        print("PREV WEEK VALUE")
+        print(prev_week)
         self.read_query_tbl1_eligible_hsn = self.read_query_tbl1_eligible_hsn.replace("{prev_week}", prev_week)
         if not self.reportable:
             self.read_query_tbl1_eligible_hsn = self.read_query_tbl1_eligible_hsn.replace("{reportable}", "in (0, 1)")
@@ -58,18 +57,20 @@ class gisaid_obj():
         if len(self.hsn_lst) == 0:
             raise ValueError("==================================================================================\nError:\nNo eligible samples for gisaid report!! - All samples already reported\n==================================================================================\n")
 
-    def get_gisaid_df(self):
+    def get_gisaid_df(self,run_hsn):
+
+        self.hsn_lst = [i.split("_")[0] for i in run_hsn]
         # use the hsn list from above to get all hsns into single dataframe
         self.gisaid_start = self.db_handler.sub_lst_read(query=self.read_query_tbl1, lst=self.hsn_lst)
         # self.user now stored in the private_cache.json file
         #self.user = input("\nPlease input the user for this report\n--> ")
         self.hsn_dict = {'hsn':[], 'gisaid':[]}
 
-    def compile_fasta(self, run_id):
+    def compile_fasta(self, date1):
         # create the name of the file that will hold the completed fasta data
         # make both destination files for metadata and fasta
         self.file_no = 1
-        date1 = datetime.datetime.strptime(run_id[7:17], "%Y-%m-%d").strftime("%m%d%y")
+        #date1 = run_date
         self.folderpath = self.folderpathbase + "/" + date1 + "/"
         if not os.path.exists(self.folderpath):
             os.makedirs(self.folderpath)
@@ -89,12 +90,14 @@ class gisaid_obj():
             gisaid_mem.close()
 
         self.filepath = date1 + "_" + str(self.file_no) + ".fasta"    
+
         # get list of fasta files
-        self.file_lst = self.gisaid_start["path_to_fasta"].values.tolist()
+        #self.file_lst = self.gisaid_start["path_to_fasta"].values.tolist()
 
 
     def compile_gisaid(self):
         # compile the gisaid template
+        #will need change the json file this once i find the FLU GIS template
         self.gisaid_df = pd.DataFrame(self.gisaid_start.rename(columns=self.rename_gisaid_cols_lst))
         self.gisaid_df.sort_values(['wgs_run_date', 'hsn'], inplace=True)
         # self.gisaid_df = add_cols(obj = self,
@@ -134,20 +137,20 @@ class gisaid_obj():
         # order columns/remove unnecessary columns
         self.gisaid_df = self.gisaid_df[self.full_gisaid_cols_lst]
 
-    def make_fasta_file(self):
+    def make_fasta_file(self,hsn_data, irma_path):
         # make the fasta file
         print("\nBuilding the all.fasta file...\n")
         s = ""
         f = open(self.folderpath + self.filepath, "w+")
-        for fasta in self.file_lst:
-            curr_file = open(fasta, "r")
+        for fasta in hsn_data:
+            curr_file = open(irma_path+fasta+"/amended_consensus/"+fasta+"_combined.fasta", "r")
             file_contents = curr_file.readlines()
             curr_file.close()
             s += "\n\n"
             for line in file_contents:
                 if line[0] != ">":
                     s += line
-                else:
+                else:#this here needs to be updated with whaat the GISAID FLU templates are
                     seq_hsn = line[1:8]
                     index = self.gisaid_df[self.gisaid_df['hsn'] == int(seq_hsn)].index.values.tolist()
                     index = index[0]
@@ -157,8 +160,8 @@ class gisaid_obj():
             s = ""
         f.close()
 
-    def make_gisaid_file(self, run_id):
-        date2 = datetime.datetime.strptime(run_id[7:17], "%Y-%m-%d").strftime("%m%d%y")
+    def make_gisaid_file(self, date2):
+        #date2 = datetime.datetime.strptime(run_id[7:17], "%Y-%m-%d").strftime("%m%d%y")
         templatefilepath = date2 + "_" + str(self.file_no) + "_sql.xlsx"
         self.gisaid_df.to_excel(self.folderpath + templatefilepath, index=False, header=True)
 
@@ -169,7 +172,7 @@ class gisaid_obj():
         #gisaid_df_update['priority_spec'] = gisaid_df_update.apply(lambda row: get_priority(row, self.priority_lst), axis=1)
         gisaid_df_update_lst = gisaid_df_update.values.astype(str).tolist()
         self.db_handler.lst_ptr_push(df_lst=gisaid_df_update_lst, query=self.write_query_tbl1)
-
+#used in functions above to control virus name outputs
     def get_virus_name(self, row):
         year = str(datetime.datetime.strptime(str(row["doc"]), "%Y-%m-%d").year)
         gisaid = int(self.next_gisaid)
@@ -183,10 +186,10 @@ class gisaid_obj():
         return "North America / USA / " + str(row["state"]) if str(row["state"]) != "unknown" else self.default_state
 
     def get_comment(self, row):
-        if str(row['hsn']) in self.priority_lst:
-            return self.priority_comment
-        else:
-            return self.default_comment
+    #    if str(row['hsn']) in self.priority_lst:
+    #        return self.priority_comment
+    #    else:
+        return self.default_comment
 
 
 def get_hsn(row):

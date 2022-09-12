@@ -12,7 +12,8 @@ def run_nextclade(sample_name, path_to_results, resource_path, nexclade_output):
 
    #nextclade_path = path_to_irma+"/resources/nextclade_data/"+what ever flue
    #flu_h1n1pdm_ha,flu_h3n2_ha
-   
+   if not os.path.exists(nexclade_output):
+    subprocess.run("mkdir "+nexclade_output,shell=True)
   
    resource_path+="/resources"
 
