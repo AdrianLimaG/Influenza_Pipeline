@@ -27,7 +27,8 @@ class demographics_import():
         #HSN_WGSRUNDATE_INDEX_
         date= hsn[0].split("_")[1]
         self.wgs_run_date = date
-     
+        #base_dict={"FluB_detected":"","FluA_detected":"","FluAH3":"","FluA2009_H1N1":""}
+        base_dict={"Influenza B":"","Influenza A":"","Influenza A/H3":"","Influenza 2009 A/H1N1":""}
         #making sure only HSN and cutting other stuff in the array
         hsn = [i.split("_")[0] for i in hsn]
    
@@ -36,10 +37,22 @@ class demographics_import():
         conn = co.connect(self.lims_connection)
 
         query="select * from wgsdemographics where HSN in ("+",".join(hsn)+")"
-
+        query_pcr="select HSN,NAME,AMOUNT from FLUWGSDEMO where HSN in ("+",".join(hsn)+") and AMOUNT <> 1000"
+        
         self.lims_df = pd.read_sql(query,conn)
-        print("current lims output")
-        print(self.lims_df.to_string())
+        #print("current lims output")
+        #print(self.lims_df.to_string())
+
+        pcr_data_df =pd.read_sql(query_pcr,conn)
+
+        self.pcr_data={}
+        for sample in hsn:
+            self.pcr_data[sample]= base_dict.copy()
+            r= pcr_data_df.query("HSN == "+sample).to_dict('records')
+            for record in r :
+                self.pcr_data[sample][record['NAME']]=record['AMOUNT']
+
+
         conn.close()
     
     def format_lims_df(self): #2
