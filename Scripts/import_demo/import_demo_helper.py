@@ -40,8 +40,10 @@ class demographics_import():
         query_pcr="select HSN,NAME,AMOUNT from FLUWGSDEMO where HSN in ("+",".join(hsn)+") and AMOUNT <> 1000"
         
         self.lims_df = pd.read_sql(query,conn)
-        #print("current lims output")
-        #print(self.lims_df.to_string())
+        for flu in base_dict:
+            self.lims_df[flu] = "Null"
+        print("current lims output after adding new columns")
+        print(self.lims_df.to_string())
 
         pcr_data_df =pd.read_sql(query_pcr,conn)
 
@@ -50,14 +52,23 @@ class demographics_import():
             self.pcr_data[sample]= base_dict.copy()
             r= pcr_data_df.query("HSN == "+sample).to_dict('records')
             for record in r :
+                row_index = self.lims_df[self.lims_df['HSN'] == sample].index.values.astype(int)[0]
+                print("row index "+int(row_index))
+                self.lims_df.at[row_index,record['NAME']]= record['AMOUNT']
                 self.pcr_data[sample][record['NAME']]=record['AMOUNT']
+        
+        print("current lims output after adding data")
+        print(self.lims_df.to_string())
 
+        print("dict values")
+        print(self.pcr_data)
 
         conn.close()
     
     def format_lims_df(self): #2
         # manipulate sql database to format accepted by the master EXCEL worksheet
         #self.log.write_log("format_lims_DF","Manipulating demographics to database format")
+           
         self.lims_df = self.lims_df.rename(columns = self.demo_names)
         self.lims_df["hsn"] = self.lims_df.apply(lambda row: str(row["hsn"]), axis=1)
         #self.log.write_log("format_lims_DF","Done!")
