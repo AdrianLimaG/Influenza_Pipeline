@@ -42,26 +42,21 @@ class demographics_import():
         self.lims_df = pd.read_sql(query,conn)
         for flu in base_dict:
             self.lims_df[flu] = "Null"
-        print("current lims output after adding new columns")
-        print(self.lims_df.to_string())
+        #print("current lims output after adding new columns")
+        #print(self.lims_df.to_string())
 
         pcr_data_df =pd.read_sql(query_pcr,conn)
 
-        self.pcr_data={}
+        #self.pcr_data={}
         for sample in hsn:
-            self.pcr_data[sample]= base_dict.copy()
+            #self.pcr_data[sample]= base_dict.copy()
             r= pcr_data_df.query("HSN == "+sample).to_dict('records')
             for record in r :
-                row_index = self.lims_df[self.lims_df['HSN'] == sample].index.values.astype(int)[0]
-                print("row index "+int(row_index))
+                row_index = self.lims_df[self.lims_df['HSN'] == int(sample)].index.values.astype(int)[0]
+           
                 self.lims_df.at[row_index,record['NAME']]= record['AMOUNT']
-                self.pcr_data[sample][record['NAME']]=record['AMOUNT']
+                #self.pcr_data[sample][record['NAME']]=record['AMOUNT']
         
-        print("current lims output after adding data")
-        print(self.lims_df.to_string())
-
-        print("dict values")
-        print(self.pcr_data)
 
         conn.close()
     
@@ -96,7 +91,7 @@ class demographics_import():
         # sort/remove columns to match list
         self.df = self.df[self.sample_data_col_order]
 
-
+        print(self.df.to_string())
         #self.log.write_log("format_dfs","Done")
     
     def database_push(self): #4

@@ -7,12 +7,12 @@ def run_import_demo(runner_path,sample_hsn):
 
     import_demo.get_lims_demographics(sample_hsn)
     print("lims imported")
-    #import_demo.format_lims_df()
+    import_demo.format_lims_df()
 
-    #import_demo.merge_dfs()
+    import_demo.merge_dfs()
 
-    #import_demo.format_dfs()
+    import_demo.format_dfs()
 
-    #import_demo.database_push()
+    import_demo.database_push()
 
     print("import demos done")
