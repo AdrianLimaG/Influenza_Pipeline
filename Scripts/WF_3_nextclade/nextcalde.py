@@ -1,4 +1,4 @@
-from nextclade.nextclade_helper import combine_nextclade_output, nextclade_data_obj, run_nextclade
+from WF_3_nextclade.nextclade_helper import combine_nextclade_output, nextclade_data_obj, run_nextclade
 
 
 #nextclade run  --in-order --input-dataset /home/ks_khel/data/flu_h3n2_ha/  --output-tsv /home/ks_khel/output/next.tsv --output-basename nextclade /home/ks_khel/Documents/GitHub/Infulenza_Pipeline/barcode01/amended_consensus/all_b1.fasta --output-all output

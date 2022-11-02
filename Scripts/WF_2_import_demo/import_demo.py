@@ -1,4 +1,4 @@
-from import_demo.import_demo_helper import demographics_import
+from WF_2_import_demo.import_demo_helper import demographics_import
 
 
 def run_import_demo(runner_path,sample_hsn):

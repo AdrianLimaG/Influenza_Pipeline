@@ -1,11 +1,30 @@
 
 
-from merge_seq_data.merge_fastq import merge_seq_fastq
-from irma.run_irma import irma_runner
-from nextclade.nextcalde import nextclade_runner
-from import_demo.import_demo import run_import_demo
+from WF_0_merge_seq_data.merge_fastq import merge_seq_fastq
+from WF_1_irma.run_irma import irma_runner
+from WF_3_nextclade.nextcalde import nextclade_runner
+from WF_2_import_demo.import_demo import run_import_demo
 import os
 import sys
+import pandas as pd
+import reader
+
+
+#create a class inorder to read in parameters from json
+
+class flu_pipeline() :
+
+    def __init__(self,cache_path) :
+
+        demo_cahce= reader.read_json(cache_path+"/data/pipeline_resources.json")
+        for item in [*demo_cahce] :
+            setattr(self,item, demo_cahce[item])
+
+
+    def run_flu_pipeline():
+        pass
+
+
 
 def pipeline(minion_path,sample_sheet_p): #variables, analysis_working_dir, final_out_dir, nextclade_output
     
@@ -17,6 +36,7 @@ def pipeline(minion_path,sample_sheet_p): #variables, analysis_working_dir, fina
     res_dir+=run_date
     nextclade_output= "/home/ssh_user/FLU_WGS_Sequencing/Nextclade"
     nextclade_output=nextclade_output+"/"+run_date
+
     #Step 1 merge  fasta files
     #fastq_paths_dic = merge_seq_fastq(minion_path,sample_sheet_p)
 
@@ -43,7 +63,10 @@ def pipeline(minion_path,sample_sheet_p): #variables, analysis_working_dir, fina
     print("Nextclade Completed")
 
 
-    #next thing to do is to create GISAID Reports 
+#prep seq for ncbi upload
+
+
+    #next thing to do is to create GISAID Reports #epiFLU seems to be still down
     #and variant reports
     
 

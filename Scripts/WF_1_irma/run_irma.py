@@ -1,7 +1,6 @@
 import time
-from irma.run_irma_helper import run_irma
-from irma.run_irma_helper import move_results
-from irma.run_irma_helper import sample_metrics
+from WF_1_irma.run_irma_helper import run_irma, move_results, sample_metrics
+
 import json
 
 #from merge_seq_data.merge_fastq_helper import find_samples
