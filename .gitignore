@@ -134,8 +134,12 @@ data/demographics.json
 data/nextclade.json
 data/gisaid.json
 data/sample_metrics.json
+
+
+
 Scripts/__pycache__/
-Scripts/import_demo/__pycache__/
-Scripts/irma/__pycache__/
-Scripts/merge_seq_data/__pycache__/
-Scripts/nextclade/__pycache__/
+Scripts/WF_2_import_demo/__pycache__/
+Scripts/WF_1_irma./__pycache__/
+Scripts/WF_0_merge_seq_data/__pycache__/
+Scripts/WF_3_nextclade/__pycache__/
+Scripts/WF_5_final_report/__pycache__/
