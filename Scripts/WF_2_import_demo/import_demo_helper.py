@@ -5,6 +5,7 @@ import reader
 import datetime
 from other import add_cols
 import json
+import os
 
 class demographics_import():
 
@@ -23,7 +24,7 @@ class demographics_import():
         
         
     
-    def get_lims_demographics(self,hsn): #1
+    def get_lims_demographics(self,hsn,report_dir): #1
         #HSN_WGSRUNDATE_INDEX_
         date= hsn[0].split("_")[1]
         self.wgs_run_date = date
@@ -42,6 +43,20 @@ class demographics_import():
         self.lims_df = pd.read_sql(query,conn)
         for flu in base_dict:
             self.lims_df[flu] = "Null"
+
+
+        if not os.path.exists(report_dir+"/"+date):
+            os.mkdir(report_dir+"/"+date)
+
+        f= open(report_dir+"/"+date+"/"+date+"_demo.csv","w+")    
+        f.write(",".join(["Accession_Number","Patient_Name","Patient_DOB","Patient_Gender","Ordering_Facility","Specimen_Collection_Date","Race"]))
+        #create txt file of demographical information, for final report
+        for sample_df in self.lims_df.values.astype(str).tolist() :
+            #5,8,9,13,3,10,
+            f.write(",".join(sample_df[0],sample_df[5],sample_df[8],sample_df[9],sample_df[13],sample_df[3],sample_df[10]))
+        f.close()
+            
+        
         #print("current lims output after adding new columns")
         #print(self.lims_df.to_string())
 
@@ -98,12 +113,13 @@ class demographics_import():
         #self.log.write_log("database_push","Starting")
         self.setup_db()
         df_demo_lst = self.df.values.astype(str).tolist()
-       
-        #df_table_col_query = "(" + ", ".join(self.df.columns.astype(str).tolist()) + ")"
         
         self.write_query_tbl1 = (" ").join(self.write_query_tbl1)
    
         self.db_handler.lst_ptr_push(df_lst=df_demo_lst, query=self.write_query_tbl1)
+
+        #need to write this txt file in the results
+        #Patient_Last_Name","Patient_First_Name","Patient_DOB","Patient_Gender","Ordering_Facility","Specimen_Collection_Date","Specimen_Source", "Test_Date"
         #self.log.write_log("database_push","Done!`")
 
     def setup_db(self):

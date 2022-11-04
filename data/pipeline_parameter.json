@@ -1,0 +1,7 @@
+{
+
+    "res_dir" : "/home/ssh_user/FLU_WGS_Sequencing/IRMA/",
+    "nextclade_output" : "/home/ssh_user/FLU_WGS_Sequencing/Nextclade",
+    "final_results_dir" : "/home/ssh_user/FLU_WGS_Sequencing/results"
+
+}

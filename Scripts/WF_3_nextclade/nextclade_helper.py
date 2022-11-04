@@ -26,7 +26,7 @@ def run_nextclade(sample_name, path_to_results, resource_path, nexclade_output):
        subprocess.run("mkdir "+nexclade_output+"/"+sample,shell=True)
 
 
-       for virus_dataset in ["flu_h3n2_ha", "flu_h1n1pdm_ha"]:#,"flu_yam_ha",,"flu_vic_ha"] : removing this yam_ha isnt working
+       for virus_dataset in ["flu_h3n2_ha", "flu_h1n1pdm_ha"]: #,"flu_yam_ha",,"flu_vic_ha"] : removing this yam_ha isnt working
 
            nextclade_cmd= resource_path+"/nextclade/nextclade run --in-order --input-dataset "+resource_path+"/nextclade_data/"+virus_dataset+" --output-tsv "+nexclade_output+"/"+sample+"/"+sample+"_"+virus_dataset+".tsv --output-basename "+sample+" "+combined+" --output-all "+nexclade_output+"/"+sample
            #print(nextclade_cmd)

@@ -1,5 +1,5 @@
 
-from gisaid_export.gisaid_helper import gisaid_obj
+from WF_4_gisaid_export.gisaid_helper import gisaid_obj
 
 def run_gisaid(cache_path,run_date,irma_res_path,run_hsn):
     print("\n================================\nGISAID Report Script\n================================\n\n")
