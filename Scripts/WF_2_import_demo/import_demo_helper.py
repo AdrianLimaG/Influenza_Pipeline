@@ -49,11 +49,11 @@ class demographics_import():
             os.mkdir(report_dir+"/"+date)
 
         f= open(report_dir+"/"+date+"/"+date+"_demo.csv","w+")    
-        f.write(",".join(["Accession_Number","Patient_Name","Patient_DOB","Patient_Gender","Ordering_Facility","Specimen_Collection_Date","Race"]))
+        #f.write(",".join(["Accession_Number","Patient_Name","Patient_DOB","Patient_Gender","Ordering_Facility","Specimen_Collection_Date","Race"])+"\n")
         #create txt file of demographical information, for final report
         for sample_df in self.lims_df.values.astype(str).tolist() :
             #5,8,9,13,3,10,
-            f.write(",".join(sample_df[0],sample_df[5],sample_df[8],sample_df[9],sample_df[13],sample_df[3],sample_df[10]))
+            f.write(",".join([sample_df[0],sample_df[5],sample_df[8],sample_df[9],sample_df[13],sample_df[3],sample_df[10]])+"\n")
         f.close()
             
         
@@ -106,7 +106,7 @@ class demographics_import():
         # sort/remove columns to match list
         self.df = self.df[self.sample_data_col_order]
 
-        print(self.df.to_string())
+        #print(self.df.to_string())
         #self.log.write_log("format_dfs","Done")
     
     def database_push(self): #4

@@ -43,10 +43,12 @@ class flu_pipeline() :
         print("Nextclade Completed")
 
         #results were supose to be passed to Step 4 to create GISAID upload report
+
+        #Step 5 create final Report and move fast files all together
         #I will create a script to output a tsv of hsn, and clade hit
         #That needs to be moved back to the main network from Analysis PC
         #self.final_results_dir This is were i will dump the value of results into a file and the aligned sequences
-
+    
         create_final_report(run_date,self.nextclade_output,results,self.final_results_dir)
 
 
@@ -107,13 +109,21 @@ if __name__ == "__main__":
     #/home/ks_khel/Desktop/FLU_DATA
 
     print(sys.argv[0])
-    if sys.argv[0] == "" or sys.argv[0] == "/home/ks_khel/Documents/GitHub/Infulenza_Pipeline/Scripts/flu_pipeline.py":
+
+    if sys.argv[0] == "" or sys.argv[0] == "/home/ssh_user/Documents/GitHub/Infulenza_Pipeline/Scripts/flu_pipeline.py":
         input_path= input("Please enter the path to MinION data:     ")
 
-        pipeline(input_path,sample_sheet_p)
+        #pipeline(input_path,sample_sheet_p)
+        
+        influenza_pipeline = flu_pipeline(dir_path)
+        
+        influenza_pipeline.run_flu_pipeline(input_path,sample_sheet_p)
+
+
     else:
         #pipeline(sys.argv[0])
-        pipeline("/home/ssh_user/FLU_WGS_Sequencing/run_data/060722",sample_sheet_p)
+        print("input variables failed")
+        #pipeline("/home/ssh_user/FLU_WGS_Sequencing/run_data/060722",sample_sheet_p)
 
 
 #HSN****,PLATEPOS,INDEX**

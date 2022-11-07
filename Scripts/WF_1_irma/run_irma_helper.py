@@ -52,8 +52,8 @@ def sample_metrics(list_samples,sample_path,resource_path):
 
             if os.path.exists(sample_path+"/"+sample+"/"+protein):
 
-                out_put=subprocess.run(samtools_path+sample_path+sample+"/"+protein, capture_output=True, text=True, shell=True)
-
+                out_put=subprocess.run(samtools_path+sample_path+"/"+sample+"/"+protein, capture_output=True, text=True, shell=True)
+                print(out_put)
                 data= out_put.stdout.split("\n")[1].split("\t")
                 temp_dict[protein[2:-4]+"_avg_depth"] = int(round(float(data[6])))
                 temp_dict[protein[2:-4]+"_coverage"] = int(data[5])

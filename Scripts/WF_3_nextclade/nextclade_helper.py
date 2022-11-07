@@ -19,8 +19,10 @@ def run_nextclade(sample_name, path_to_results, resource_path, nexclade_output):
 
    for sample in sample_name:
        #run_nextclade
+       #temp_hsn = sample.split("_")[0]
        positive_hits[sample]=[]
-       path_to_sample=path_to_results+sample+"/amended_consensus"
+       
+       path_to_sample=path_to_results+"/"+sample+"/amended_consensus"
        combined = concat_fasta(sample,path_to_sample)
     #create nextclade output
        subprocess.run("mkdir "+nexclade_output+"/"+sample,shell=True)
@@ -138,9 +140,9 @@ class nextclade_data_obj():
             df.fillna("", inplace=True)
             self.df_qc = df[self.nc_qc_cols_lst]
             self.df_results = df[self.nc_results_cols_lst]
-            print(self.df_results)
-            print("------------------------------------")
-            print(self.df_qc)
+            #print(self.df_results)
+            #print("------------------------------------")
+            #print(self.df_qc)
             #self.log.write_log("get_nextcalde_dfs","complete")
     
     def setup_db(self):
