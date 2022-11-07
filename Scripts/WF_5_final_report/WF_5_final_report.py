@@ -47,8 +47,18 @@ def create_final_report(run_date,path_to_nextclade,nextclade_hits,result_output)
     report.close()
     print("report created")
 
-    
 
+def move_fasta_files(fastq_samples,path_to_irma,result_output_dir,runD):
+
+    os.mkdir(result_output_dir+"/"+runD+"/fasta_files")
+
+    for sample in fastq_samples:
+        temp_hsn = sample.split("_")[0]
+
+        subprocess.run("cp "+path_to_irma+"/"+sample+"/amended_consensus/"+sample+"_combined.fasta "+result_output_dir+"/"+runD+"/fasta_files/"+temp_hsn+".fasta", shell=True)
+
+    
+    print("Fasta Files have been copied")
 
 
 
