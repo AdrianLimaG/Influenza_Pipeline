@@ -7,10 +7,10 @@ import json
 
 def irma_runner(dic_path,resource_path,results_dir):
 
-    run_irma(dic_path, resource_path)
-    time.sleep(10)
+    #run_irma(dic_path, resource_path)
+    #time.sleep(10)
 
-    move_results([*dic_path],resource_path,results_dir)
+    #move_results([*dic_path],resource_path,results_dir)
 
     metrics=sample_metrics([*dic_path],results_dir,resource_path)
 

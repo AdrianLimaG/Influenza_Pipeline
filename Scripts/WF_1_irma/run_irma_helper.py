@@ -55,12 +55,12 @@ def sample_metrics(list_samples,sample_path,resource_path):
                 out_put=subprocess.run(samtools_path+sample_path+"/"+sample+"/"+protein, capture_output=True, text=True, shell=True)
                 print(out_put)
                 data= out_put.stdout.split("\n")[1].split("\t")
-                temp_dict[protein[2:-4]+"_avg_depth"] = int(round(float(data[6])))
-                temp_dict[protein[2:-4]+"_coverage"] = int(data[5])
+                temp_dict[protein[2:-4]+"_avg_depth"] = round(float(data[6]),2)
+                temp_dict[protein[2:-4]+"_coverage"] = round(float(data[5]),2)
                 #coverage[hsn][protein[2:-4]+"_avg_depth"] = int(round(float(data[6])))
                 #coverage[hsn][protein[2:-4]+"_coverage"] = int(data[5])
-                temp_depth.append(int(round(float(data[6]))))
-                temp_coverage.append(int(data[5]))
+                temp_depth.append(round(float(data[6]),2))
+                temp_coverage.append(round(float(data[5]),2))
 
             else:
                 print("sample "+sample+" has no bam file for protein "+ protein)  #should be written to a file  

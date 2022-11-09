@@ -62,7 +62,11 @@ def move_fasta_files(fastq_samples,path_to_irma,result_output_dir,runD):
 
 
 
-
+if __name__ == "__main__":
+    fastq_paths_dic={"2225102_060722_01" : "","2225196_060722_02" :"","2231833_060722_04" :" ","2225184_060722_03" :"",  "2229929_060722_05" :""}
+    
+    move_fasta_files([*fastq_paths_dic],"/home/ssh_user/FLU_WGS_Sequencing/IRMA/","/home/ssh_user/FLU_WGS_Sequencing/results","060722")
+    
    
 
 

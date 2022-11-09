@@ -29,8 +29,8 @@ class flu_pipeline() :
 
         #Step 0 merge  fasta files
         fastq_paths_dic = merge_seq_fastq(minion_path,sample_sheet_p)
-        print("Merging Completing")
-
+        print("Merging Completing")#,'2208336_060722_31':''
+        #fastq_paths_dic={'2200158_060722_18':'','2200185_060722_20':'','2200209_060722_19':'','2200229_060722_17':'','2201125_060722_22':'','2201150_060722_21':'','2202121_060722_23':'','2204939_060722_24':'','2204972_060722_25':'','2204990_060722_26':'','2205005_060722_29':'','2205018_060722_28':'','2205025_060722_27':'','2208361_060722_32':'','2208364_060722_30':'','2225102_060722_01':'','2225184_060722_03':'','2225196_060722_02':'','2229916_060722_06':'','2229929_060722_05':'','2231833_060722_04':'','2231954_060722_07':'','2233275_060722_08':'','2233282_060722_10':'','2234116_060722_09':'','2234922_060722_11':'','2234924_060722_12':'','2239358_060722_13':'','2240979_060722_14':'','2244254_060722_15':'','2245770_060722_16':''}
         #Step 1 run irma for allignment
         irma_runner(fastq_paths_dic,self.dir_path,self.res_dir) 
         print("IRMA Completing")
@@ -83,6 +83,7 @@ def pipeline(minion_path,sample_sheet_p): #variables, analysis_working_dir, fina
 
     #fastq_paths_dic={'2225196': '/home/ks_khel/Desktop/FLU_DATA/barcode02/2225196_combined.fastq.gz', '2231833': '/home/ks_khel/Desktop/FLU_DATA/barcode04/2231833_combined.fastq.gz', '2225102': '/home/ks_khel/Desktop/FLU_DATA/barcode01/2225102_combined.fastq.gz', '2229929': '/home/ks_khel/Desktop/FLU_DATA/barcode05/2229929_combined.fastq.gz', '2225184': '/home/ks_khel/Desktop/FLU_DATA/barcode03/2225184_combined.fastq.gz'}
    # fastq_paths_dic={"2225102_060722_01" : "","2225196_060722_02" :"","2231833_060722_04" :" ","2225184_060722_03" :"",  "2229929_060722_05" :""}
+    
     #Now will need to import demographics from horizon to our local db
     #Step 3 Import Demographics
     #has to be done at this step because this after HSN has been mapped
@@ -105,23 +106,28 @@ if __name__ == "__main__":
     dir_path = "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[:-1]) #path minus scripts 
     sample_sheet_p ="/home/ssh_user/FLU_WGS_Sequencing/sample_sheet/060722.csv" #will need a way to pass this differently
     #/home/ks_khel/Desktop/FLU_DATA
+    #print(sys.argv)
+    input_path = sys.argv[1]
+    sample_sheet_p = sys.argv[2]
+    print(input_path)
+    print("-----------")
+    print(sample_sheet_p)
+    #print(sys.argv[0])
+    influenza_pipeline = flu_pipeline(dir_path)
+       
+    influenza_pipeline.run_flu_pipeline(input_path,sample_sheet_p)
 
-    print(sys.argv[0])
-
-    if sys.argv[0] == "" or sys.argv[0] == "/home/ssh_user/Documents/GitHub/Infulenza_Pipeline/Scripts/flu_pipeline.py":
-        input_path= input("Please enter the path to MinION data:     ")
+   # if sys.argv[0] == "" or sys.argv[0] == "/home/ssh_user/Documents/GitHub/Infulenza_Pipeline/Scripts/flu_pipeline.py":
+    #    input_path= input("Please enter the path to MinION data:     ")
 
         #pipeline(input_path,sample_sheet_p)
         
-        influenza_pipeline = flu_pipeline(dir_path)
+     #   influenza_pipeline = flu_pipeline(dir_path)
         
-        influenza_pipeline.run_flu_pipeline(input_path,sample_sheet_p)
+      #  influenza_pipeline.run_flu_pipeline(input_path,sample_sheet_p)
 
 
-    else:
-        #pipeline(sys.argv[0])
-        print("input variables failed")
-        #pipeline("/home/ssh_user/FLU_WGS_Sequencing/run_data/060722",sample_sheet_p)
+
 
 
 
