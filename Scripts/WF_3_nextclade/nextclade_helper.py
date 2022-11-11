@@ -18,34 +18,39 @@ def run_nextclade(sample_name, path_to_results, resource_path, nexclade_output):
    resource_path+="/resources"
 
    for sample in sample_name:
-       #run_nextclade
-       #temp_hsn = sample.split("_")[0]
-       positive_hits[sample]=[]
+    #run_nextclade
+    #temp_hsn = sample.split("_")[0]
+    positive_hits[sample]=[]
        
-       path_to_sample=path_to_results+"/"+sample+"/amended_consensus"
-       combined = concat_fasta(sample,path_to_sample)
-    #create nextclade output
-       subprocess.run("mkdir "+nexclade_output+"/"+sample,shell=True)
+    path_to_sample=path_to_results+"/"+sample+"/amended_consensus"
+    #this is where i put the check
+    combined = concat_fasta(sample,path_to_sample)
+       
+    if combined != "FAILED TO ASSEMBLED" :
 
+        subprocess.run("mkdir "+nexclade_output+"/"+sample,shell=True)
 
-       for virus_dataset in ["flu_h3n2_ha", "flu_h1n1pdm_ha"]: #,"flu_yam_ha",,"flu_vic_ha"] : removing this yam_ha isnt working
+        for virus_dataset in ["flu_h3n2_ha", "flu_h1n1pdm_ha"]: #,"flu_yam_ha",,"flu_vic_ha"] : removing this yam_ha isnt working
 
-           nextclade_cmd= resource_path+"/nextclade/nextclade run --in-order --input-dataset "+resource_path+"/nextclade_data/"+virus_dataset+" --output-tsv "+nexclade_output+"/"+sample+"/"+sample+"_"+virus_dataset+".tsv --output-basename "+sample+" "+combined+" --output-all "+nexclade_output+"/"+sample
-           #print(nextclade_cmd)
-           
-           result=subprocess.run(nextclade_cmd, capture_output=True, text=True, shell=True)
+            nextclade_cmd= resource_path+"/nextclade/nextclade run --in-order --input-dataset "+resource_path+"/nextclade_data/"+virus_dataset+" --output-tsv "+nexclade_output+"/"+sample+"/"+sample+"_"+virus_dataset+".tsv --output-basename "+sample+" "+combined+" --output-all "+nexclade_output+"/"+sample
+            #print(nextclade_cmd)
+                
+            result=subprocess.run(nextclade_cmd, capture_output=True, text=True, shell=True)
 
-           line_n=subprocess.run("wc -l <"+nexclade_output+"/"+sample+"/"+sample+"_"+virus_dataset+".tsv", capture_output=True, text=True, shell=True)
-           
-           #print(result.stderr) #will need to work this to see which one produce 
-           ##nexclade_output+"/"+sample+"/"+sample+"_"+virus_dataset+".tsv 
+            line_n=subprocess.run("wc -l <"+nexclade_output+"/"+sample+"/"+sample+"_"+virus_dataset+".tsv", capture_output=True, text=True, shell=True)
+                
+            #print(result.stderr) #will need to work this to see which one produce 
+            ##nexclade_output+"/"+sample+"/"+sample+"_"+virus_dataset+".tsv 
+                    
+            if int(line_n.stdout.strip())> 1:
+                positive_hits[sample].append(virus_dataset)
             
-           if int(line_n.stdout.strip())> 1:
-               positive_hits[sample].append(virus_dataset)
-            
-           #need to return a dic of dic
-           #{samplename:[virusname,virusname too]}
+    else: #failed to have a consensus sequence, need to ask if they want these in the DB
+        positive_hits[sample].append("FAILED_TO_ASSEMBLE")
+        
 
+    #need to return a dic of dic
+    #{samplename:[virusname,virusname too]}else:
    return positive_hits
 
 
@@ -53,47 +58,54 @@ def concat_fasta(sample_n,path_to_files):
 
     fastq = os.listdir(path_to_files)
     fastq_s = (" "+path_to_files+"/").join(['',*fastq])
-    
-    output= subprocess.run("cat "+fastq_s+" > "+path_to_files+"/"+sample_n+"_combined.fasta",shell=True)
+    if os.path.exists(path_to_files):
+        output= subprocess.run("cat "+fastq_s+" > "+path_to_files+"/"+sample_n+"_combined.fasta",shell=True)
 
-    return path_to_files+"/"+sample_n+"_combined.fasta"
+        return path_to_files+"/"+sample_n+"_combined.fasta"
+    else:
+        return "FAILED TO ASSEMBLED"
 
 
 def combine_nextclade_output(nextclade_output_path,samples): 
 
     #need to loop through all csv files skip frist line
     combined_nextclade = open(nextclade_output_path+"/combined_nextclade.tsv","w+")
-    header="seqName	clade\tqc.overallScore\tqc.overallStatus\ttotalSubstitutions\ttotalDeletions\ttotalInsertions\ttotalFrameShifts\ttotalAminoacidSubstitutions\ttotalAminoacidDeletions\ttotalAminoacidInsertions\ttotalMissing\ttotalNonACGTNs\ttotalPcrPrimerChanges\tsubstitutions\tdeletions\tinsertions\tprivateNucMutations.reversionSubstitutions\tprivateNucMutations.labeledSubstitutions\tprivateNucMutations.unlabeledSubstitutions\tprivateNucMutations.totalReversionSubstitutions\tprivateNucMutations.totalLabeledSubstitutions\tprivateNucMutations.totalUnlabeledSubstitutions\tprivateNucMutations.totalPrivateSubstitutions\tframeShifts\taaSubstitutions\taaDeletions\taaInsertions\tmissing\tnonACGTNs\tpcrPrimerChanges\talignmentScore\talignmentStart\talignmentEnd\tqc.missingData.missingDataThreshold\tqc.missingData.score\tqc.missingData.status\tqc.missingData.totalMissing\tqc.mixedSites.mixedSitesThreshold\tqc.mixedSites.score\tqc.mixedSites.status\tqc.mixedSites.totalMixedSites\tqc.privateMutations.cutoff\tqc.privateMutations.excess\tqc.privateMutations.score\tqc.privateMutations.status\tqc.privateMutations.total\tqc.snpClusters.clusteredSNPs\tqc.snpClusters.score\tqc.snpClusters.status\tqc.snpClusters.totalSNPs\tqc.frameShifts.frameShifts\tqc.frameShifts.totalFrameShifts\tqc.frameShifts.frameShiftsIgnored\tqc.frameShifts.totalFrameShiftsIgnored\tqc.frameShifts.score\tqc.frameShifts.status\tqc.stopCodons.stopCodons\tqc.stopCodons.totalStopCodons\tqc.stopCodons.score\tqc.stopCodons.status\tisReverseComplement\terrors\n"
+    header="seqName\tclade\tqc.overallScore\tqc.overallStatus\ttotalSubstitutions\ttotalDeletions\ttotalInsertions\ttotalFrameShifts\ttotalAminoacidSubstitutions\ttotalAminoacidDeletions\ttotalAminoacidInsertions\ttotalMissing\ttotalNonACGTNs\ttotalPcrPrimerChanges\tsubstitutions\tdeletions\tinsertions\tprivateNucMutations.reversionSubstitutions\tprivateNucMutations.labeledSubstitutions\tprivateNucMutations.unlabeledSubstitutions\tprivateNucMutations.totalReversionSubstitutions\tprivateNucMutations.totalLabeledSubstitutions\tprivateNucMutations.totalUnlabeledSubstitutions\tprivateNucMutations.totalPrivateSubstitutions\tframeShifts\taaSubstitutions\taaDeletions\taaInsertions\tmissing\tnonACGTNs\tpcrPrimerChanges\talignmentScore\talignmentStart\talignmentEnd\tqc.missingData.missingDataThreshold\tqc.missingData.score\tqc.missingData.status\tqc.missingData.totalMissing\tqc.mixedSites.mixedSitesThreshold\tqc.mixedSites.score\tqc.mixedSites.status\tqc.mixedSites.totalMixedSites\tqc.privateMutations.cutoff\tqc.privateMutations.excess\tqc.privateMutations.score\tqc.privateMutations.status\tqc.privateMutations.total\tqc.snpClusters.clusteredSNPs\tqc.snpClusters.score\tqc.snpClusters.status\tqc.snpClusters.totalSNPs\tqc.frameShifts.frameShifts\tqc.frameShifts.totalFrameShifts\tqc.frameShifts.frameShiftsIgnored\tqc.frameShifts.totalFrameShiftsIgnored\tqc.frameShifts.score\tqc.frameShifts.status\tqc.stopCodons.stopCodons\tqc.stopCodons.totalStopCodons\tqc.stopCodons.score\tqc.stopCodons.status\tisReverseComplement\terrors\n"
     
     nextclade_text= []
     temp_clade=""
     nextclade_temp_text =""
 
     for sample in [*samples]:
-        i=0
-        while i < len(samples[sample]):
+        if samples[samples] == ["FAILED_TO_ASSEMBLE"] :
+            #means no nextcalde results
+            nextclade_text.append(sample+"\tFAILED\tFAILED\tFAILED\n")
 
-            sample_nextcalde = open(nextclade_output_path+"/"+sample+"/"+sample+"_"+samples[sample][i]+".tsv","r")
-            lines = sample_nextcalde.readlines()[1]
-            temp_l = lines.split("\t")
-            #HSN_WGSRUNDATE_INDEX(POS)_PROTIENSEQNUM
-            #adding MNUM_RUNNUMBER ---- adding this to thingy
-            
-            temp_l[0]=temp_l[0]+"_0_0"
-            lines = "\t".join(temp_l)
+        else:    
+            i=0
+            while i < len(samples[sample]):
 
-            if i> 0:
-                temp_clade = lines.split("\t")[1] #grabing only clade data
+                sample_nextcalde = open(nextclade_output_path+"/"+sample+"/"+sample+"_"+samples[sample][i]+".tsv","r")
+                lines = sample_nextcalde.readlines()[1]
+                temp_l = lines.split("\t")
+                #HSN_WGSRUNDATE_INDEX(POS)_PROTIENSEQNUM
+                #adding MNUM_RUNNUMBER ---- adding this to thingy
                 
-                last_nextclade = nextclade_text[-1].split("\t")
-                last_nextclade[1]+=";"+temp_clade
+                temp_l[0]=temp_l[0]+"_0_0"
+                lines = "\t".join(temp_l)
 
-                nextclade_text[-1] = "\t".join(last_nextclade)
+                if i> 0:
+                    temp_clade = lines.split("\t")[1] #grabing only clade data
+                    
+                    last_nextclade = nextclade_text[-1].split("\t")
+                    last_nextclade[1]+=";"+temp_clade
 
-            else:
-                nextclade_text.append(lines)
+                    nextclade_text[-1] = "\t".join(last_nextclade)
 
-            i+=1
+                else:
+                    nextclade_text.append(lines)
+
+                i+=1
 
     sample_nextcalde.close()
     combined_nextclade.write(header)
