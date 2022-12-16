@@ -10,7 +10,11 @@ def find_samples(path_to_data,sample_sheet_p):
     hsns = read_sample_sheet(sample_sheet_p)
     #skipping parent directory
     for sample_folder_path in folders[1:]:
-        combine_file_paths.update(concat_fastq(sample_folder_path,hsns))
+        #need to build the check here
+        barcode_number = int(sample_folder_path.split("/")[-1][-2:])
+        #will only continue if barcode is listed within SampleSheet or else it is exta noise
+        if barcode_number <= len(hsns):
+            combine_file_paths.update(concat_fastq(sample_folder_path,hsns))
 
     return combine_file_paths
 
