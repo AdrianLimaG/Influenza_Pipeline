@@ -4,7 +4,7 @@ from WF_0_merge_seq_data.merge_fastq import merge_seq_fastq
 from WF_1_irma.run_irma import irma_runner
 from WF_3_nextclade.nextcalde import nextclade_runner
 from WF_2_import_demo.import_demo import run_import_demo
-from WF_5_final_report.WF_5_final_report import create_final_report, move_fasta_files
+from WF_5_final_report.WF_5_final_report import create_final_report, move_fasta_files, create_alignment_file, create_phylogentic_tree
 import os
 import sys
 import pandas as pd
@@ -53,6 +53,9 @@ class flu_pipeline() :
 
         move_fasta_files([*fastq_paths_dic],self.res_dir,self.final_results_dir, run_date )
 
+        create_alignment_file(self.dir_path,self.res_dir,[*results],self.final_results_dir,run_date)
+
+        create_phylogentic_tree(self.final_results_dir,run_date)
 
         print("PipeLine Finished!")
 

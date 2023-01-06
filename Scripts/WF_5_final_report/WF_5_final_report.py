@@ -1,6 +1,7 @@
 import os
 import subprocess
 from datetime import date
+import shutil
 
 
 
@@ -8,7 +9,7 @@ def create_final_report(run_date,path_to_nextclade,nextclade_hits,result_output)
     pass
     today = date.today().strftime("%b-%d-%Y")
     hits={}
-
+    #could be wirten better
     for key in [*nextclade_hits] :
         hits[key.split("_")[0]] = nextclade_hits[key]
 
@@ -61,12 +62,53 @@ def move_fasta_files(fastq_samples,path_to_irma,result_output_dir,runD):
     print("Fasta Files have been copied")
 
 
+#need two new function to create phylo genetic tree
+#one to create alignmnet file
+    #copy all XXX_4.fa files into a temp dir then run it
+#output dir should include runID
+def create_alignment_file (path_to_resources,path_to_irma,nextclade_hsn_file_name,output_dir,runD):
+    
+    output_dir+="/"+runD
+    path_to_irma+="/"+runD
+
+
+    os.mkdir(output_dir+"/temp_alignment")
+    os.mkdir(output_dir+"/fasta_alignment")
+    #get all files in one place
+    for sample in nextclade_hsn_file_name:
+        hsn = sample.split(_)[0]
+        subprocess.run("cp "+path_to_irma+"/"+hsn+"/amended_consensus/*_4.fa "+output_dir+"/temp_alignment",shell=True)
+    
+    #nextalign run --input-ref=nextclade-master/data/flu_h3n2_ha/reference.fasta 
+    #--genemap=nextclade-master/data/flu_h3n2_ha/genemap.gff --output-all=output_nextali/ temp_align/*.fa
+
+    subprocess.run("source activate nextali && nextalign run --input-ref="+path_to_resources+"/flu_h3n2_ha/reference.fasta --genemap="+path_to_resources+"/flu_h3n2_ha/genemap.gff --output-all="+output_dir+"/fasta_alignment "+output_dir+"/temp_alignment/*.fa" ,shell=True)
+
+#one to do the agur
+def create_phylogentic_tree(output_dir,runD):
+    output_dir+="/"+runD
+    #augur tree --method iqtree --alignment /home/ssh_user/output_nextali/nextalign.aligned.fasta 
+    # --substitution-model GTR --nthreads 20 --output test_tree
+
+    subprocess.run("cd "+output_dir+"/fasta_alignment && augur tree --method iqtree --substitution-model GTR --nthreads 20 --alignment "+output_dir+"/fasta_alignment/nextalign.aligned.fasta --output "+output_dir+"/tree.nwk",shell=True)
+
+    #copy alignment file out
+    os.rename(output_dir+"/fasta_alignment/nextalign.aligned.fasta",output_dir+"/"+runD+"_aligned.fasta")
+
+    #now clean up process
+    os.rmdir(output_dir+"/temp_alignment")
+    os.rmdir(output_dir+"/fasta_alignment")
+
+
 
 if __name__ == "__main__":
     fastq_paths_dic={"2225102_060722_01" : "","2225196_060722_02" :"","2231833_060722_04" :" ","2225184_060722_03" :"",  "2229929_060722_05" :""}
+    #move_fasta_files([*fastq_paths_dic],"/home/ssh_user/FLU_WGS_Sequencing/IRMA/","/home/ssh_user/FLU_WGS_Sequencing/results","060722")
     
-    move_fasta_files([*fastq_paths_dic],"/home/ssh_user/FLU_WGS_Sequencing/IRMA/","/home/ssh_user/FLU_WGS_Sequencing/results","060722")
-    
+    create_alignment_file("RESOURCES","/home/ssh_user/FLU_WGS_Sequencing/IRMA/",[*fastq_paths_dic],"/home/ssh_user/FLU_WGS_Sequencing/results","060722")
+
+    create_phylogentic_tree("/home/ssh_user/FLU_WGS_Sequencing/results","060722")
+
    
 
 
