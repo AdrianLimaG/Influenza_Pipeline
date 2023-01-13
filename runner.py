@@ -7,8 +7,8 @@ if __name__ == "__main__":
     print("="*50, "\nIN LINUX 'runner.py' SCRIPT\n" + "="*50)
     try:
 
-        path_to_data = str(sys.argv[0])
-        path_to_sampleSheet = str(sys.argv[1])
+        path_to_data = str(sys.argv[1])
+        path_to_sampleSheet = str(sys.argv[2])
         # call to main script
         print("Path to Data "+path_to_data)
         print("Path to Sample Sheet "+path_to_sampleSheet)

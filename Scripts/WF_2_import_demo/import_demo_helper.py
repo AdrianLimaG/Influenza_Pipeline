@@ -36,14 +36,13 @@ class demographics_import():
         #self.df_hsn = pd.DataFrame(hsn,columns=["hsn"]) #<-could be defined else where, 
         #this will need be a variable i m thinking a jason file that will also feed into msql class
         conn = co.connect(self.lims_connection)
-
-        query="select * from wgsdemographics where HSN in ("+",".join(hsn)+")"
-        query_pcr="select HSN,NAME,AMOUNT from FLUWGSDEMO where HSN in ("+",".join(hsn)+") and AMOUNT <> 1000"
         
+        query="select * from wgsdemographics where HSN in ("+",".join(hsn)+")"
+        query_pcr="select HSN,ANALYTE,NUMERICRESULT from FLUWGSDEMO where HSN in ("+",".join(hsn)+") and NUMERICRESULT <> 1000"
+        query="select HSN,REPORT_DATE,RECEIVE_DATE,COLLECT_DATE,NAME,COUNTY,STATE,DOB,GENDER,RACE,ETHNICITY,MATRIX,CLIENTID,CLIENTNAME from FLUWGSDEMO where HSN in ("+",".join(hsn)+") GROUP BY HSN,REPORT_DATE,RECEIVE_DATE,COLLECT_DATE,NAME,COUNTY,STATE,DOB,GENDER,RACE,ETHNICITY,MATRIX,CLIENTID,CLIENTNAME"
         self.lims_df = pd.read_sql(query,conn)
         for flu in base_dict:
             self.lims_df[flu] = "Null"
-
 
         if not os.path.exists(report_dir+"/"+date):
             os.mkdir(report_dir+"/"+date)
@@ -66,10 +65,10 @@ class demographics_import():
         for sample in hsn:
             #self.pcr_data[sample]= base_dict.copy()
             r= pcr_data_df.query("HSN == "+sample).to_dict('records')
-            for record in r :
+            for record in r : #add pcr findings to demo
                 row_index = self.lims_df[self.lims_df['HSN'] == int(sample)].index.values.astype(int)[0]
            
-                self.lims_df.at[row_index,record['NAME']]= record['AMOUNT']
+                self.lims_df.at[row_index,record['ANALYTE']]= record['NUMERICRESULT']
                 #self.pcr_data[sample][record['NAME']]=record['AMOUNT']
         
 
@@ -81,6 +80,8 @@ class demographics_import():
            
         self.lims_df = self.lims_df.rename(columns = self.demo_names)
         self.lims_df["hsn"] = self.lims_df.apply(lambda row: str(row["hsn"]), axis=1)
+        #print("after format")
+        #print(self.lims_df.iloc[[0]].to_string())
         #self.log.write_log("format_lims_DF","Done!")
 
 
@@ -89,7 +90,8 @@ class demographics_import():
         self.lims_df['hsn']=self.lims_df['hsn'].astype(int)
       
         self.df = pd.merge(self.lims_df, self.df_hsn, how="inner", on="hsn")
- 
+        #print("after merge")
+        #print(self.df.iloc[[0]].to_string())
        #              self.log.write_log("merge_dfs","Done")
     
     def format_dfs(self): #3 
@@ -105,7 +107,8 @@ class demographics_import():
 
         # sort/remove columns to match list
         self.df = self.df[self.sample_data_col_order]
-
+        #print("after final fomrating")
+        #print(self.df.iloc[[0]].to_string())
         #print(self.df.to_string())
         #self.log.write_log("format_dfs","Done")
     

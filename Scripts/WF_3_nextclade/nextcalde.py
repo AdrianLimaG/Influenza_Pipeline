@@ -5,7 +5,7 @@ from WF_3_nextclade.nextclade_helper import combine_nextclade_output, nextclade_
 def nextclade_runner(samples,results_dir,resources_path, nextclade_output_path):
 
     hits = run_nextclade(samples, results_dir, resources_path, nextclade_output_path)
-
+    #print(hits)
     combined_file = combine_nextclade_output(nextclade_output_path,hits)
     
     nextclade_obj = nextclade_data_obj(resources_path)

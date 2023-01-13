@@ -77,7 +77,7 @@ def combine_nextclade_output(nextclade_output_path,samples):
     nextclade_temp_text =""
 
     for sample in [*samples]:
-        if samples[samples] == ["FAILED_TO_ASSEMBLE"] :
+        if samples[sample] == ["FAILED_TO_ASSEMBLE"] :
             #means no nextcalde results
             nextclade_text.append(sample+"\tFAILED\tFAILED\tFAILED\n")
 
