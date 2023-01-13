@@ -54,7 +54,7 @@ class flu_pipeline() :
 
         #move_fasta_files([*fastq_paths_dic],self.res_dir,self.final_results_dir, run_date )
 
-        create_alignment_file(self.dir_path,self.res_dir,[*results],self.final_results_dir,run_date)
+        create_alignment_file(self.dir_path,self.res_dir,results,self.final_results_dir,run_date)
         print("Alignment Files Created")
         create_phylogentic_tree(self.final_results_dir,run_date)
 

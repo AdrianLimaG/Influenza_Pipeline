@@ -70,34 +70,36 @@ def create_alignment_file (path_to_resources,path_to_irma,nextclade_hsn_file_nam
     
     output_dir+="/"+runD
     #path_to_irma+="/"+runD
+    for virus_dataset in ["flu_h3n2_ha", "flu_h1n1pdm_ha"]:
 
+        os.mkdir(output_dir+"/temp_alignment_"+virus_dataset)
+        os.mkdir(output_dir+"/fasta_alignment_"+virus_dataset)
 
-    os.mkdir(output_dir+"/temp_alignment")
-    os.mkdir(output_dir+"/fasta_alignment")
-    #get all files in one place
-    for sample in nextclade_hsn_file_name:
-        #hsn = sample.split('_')[0]
-        subprocess.run("cp "+path_to_irma+"/"+sample+"/amended_consensus/*_4.fa "+output_dir+"/temp_alignment",shell=True)
-    
+        #get all files in one place
+        for sample in [*nextclade_hsn_file_name]:
+            #hsn = sample.split('_')[0]
+            if virus_dataset in nextclade_hsn_file_name[sample] :
+                subprocess.run("cp "+path_to_irma+"/"+sample+"/amended_consensus/*_4.fa "+output_dir+"/temp_alignment_"+virus_dataset,shell=True)
+        
     #nextalign run --input-ref=nextclade-master/data/flu_h3n2_ha/reference.fasta 
     #--genemap=nextclade-master/data/flu_h3n2_ha/genemap.gff --output-all=output_nextali/ temp_align/*.fa
 
-    subprocess.run(". $CONDA_PREFIX/home/ssh_user/miniconda3/etc/profile.d/conda.sh && conda activate nextali && nextalign run --input-ref="+path_to_resources+"/resources/nextclade_data/flu_h3n2_ha/reference.fasta --genemap="+path_to_resources+"/resources/nextclade_data/flu_h3n2_ha/genemap.gff --output-all="+output_dir+"/fasta_alignment "+output_dir+"/temp_alignment/*.fa" ,shell=True)
+        subprocess.run(". $CONDA_PREFIX/home/ssh_user/miniconda3/etc/profile.d/conda.sh && conda activate nextali && nextalign run --input-ref="+path_to_resources+"/resources/nextclade_data/"+virus_dataset+"/reference.fasta --genemap="+path_to_resources+"/resources/nextclade_data/"+virus_dataset+"/genemap.gff --output-all="+output_dir+"/fasta_alignment_"+virus_dataset+" "+output_dir+"/temp_alignment_"+virus_dataset+"/*.fa" ,shell=True)
 
 #one to do the agur
 def create_phylogentic_tree(output_dir,runD):
     output_dir+="/"+runD
     #augur tree --method iqtree --alignment /home/ssh_user/output_nextali/nextalign.aligned.fasta 
     # --substitution-model GTR --nthreads 20 --output test_tree
+    for virus_dataset in ["flu_h3n2_ha", "flu_h1n1pdm_ha"]:
+        subprocess.run(". $CONDA_PREFIX/home/ssh_user/miniconda3/etc/profile.d/conda.sh && conda activate nextali && cd "+output_dir+"/fasta_alignment_"+virus_dataset+" && augur tree --method iqtree --substitution-model GTR --nthreads 20 --alignment "+output_dir+"/fasta_alignment_"+virus_dataset+"/nextalign.aligned.fasta --output "+output_dir+"/tree_"+virus_dataset+".nwk",shell=True)
 
-    subprocess.run(". $CONDA_PREFIX/home/ssh_user/miniconda3/etc/profile.d/conda.sh && conda activate nextali && cd "+output_dir+"/fasta_alignment && augur tree --method iqtree --substitution-model GTR --nthreads 20 --alignment "+output_dir+"/fasta_alignment/nextalign.aligned.fasta --output "+output_dir+"/tree.nwk",shell=True)
+        #copy alignment file out
+        os.rename(output_dir+"/fasta_alignment_"+virus_dataset+"/nextalign.aligned.fasta",output_dir+"/"+runD+"_"+virus_dataset+"_aligned.fasta")
 
-    #copy alignment file out
-    os.rename(output_dir+"/fasta_alignment/nextalign.aligned.fasta",output_dir+"/"+runD+"_aligned.fasta")
-
-    #now clean up process
-    subprocess.run("rm -r "+output_dir+"/temp_alignment",shell=True)
-    subprocess.run("rm -r "+output_dir+"/fasta_alignment",shell=True)
+        #now clean up process
+        subprocess.run("rm -r "+output_dir+"/temp_alignment_"+virus_dataset,shell=True)
+        subprocess.run("rm -r "+output_dir+"/fasta_alignment_"+virus_dataset,shell=True)
 
 
 
