@@ -44,8 +44,10 @@ def create_final_report(run_date,path_to_nextclade,nextclade_hits,result_output)
 
 
         report.write("\t".join(report_line)+"\n")
-
+    demo.close()
     report.close()
+    #clean up demo report
+    subprocess.run("rm "+result_output+"/"+run_date+"/"+run_date+"_demo.csv",shell=True)
     print("report created")
 
 
@@ -101,6 +103,10 @@ def create_phylogentic_tree(output_dir,runD):
         subprocess.run("rm -r "+output_dir+"/temp_alignment_"+virus_dataset,shell=True)
         subprocess.run("rm -r "+output_dir+"/fasta_alignment_"+virus_dataset,shell=True)
 
+def clean_run_files(pathTOirma,pathTOrundata,runD):
+
+    subprocess.run("rm -r "+pathTOirma+runD,shell=True)
+    subprocess.run("rm -r "+pathTOrundata+"/"+runD,shell=True)
 
 
 if __name__ == "__main__":

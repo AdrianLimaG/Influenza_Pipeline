@@ -43,6 +43,13 @@ class demographics_import():
         self.lims_df = pd.read_sql(query,conn)
         for flu in base_dict:
             self.lims_df[flu] = "Null"
+        
+        found_hsn = self.lims_df['HSN'].values.tolist()
+
+        for h in hsn: #if no demographical information add a blank line
+            if h not in found_hsn :
+                self.lims_df.loc[len(self.lims_df)] = [h,"","","","NO NAME","","","","","","","","",""]
+                
 
         if not os.path.exists(report_dir+"/"+date):
             os.mkdir(report_dir+"/"+date)
