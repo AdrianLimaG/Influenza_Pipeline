@@ -103,10 +103,11 @@ def create_phylogentic_tree(output_dir,runD):
         subprocess.run("rm -r "+output_dir+"/temp_alignment_"+virus_dataset,shell=True)
         subprocess.run("rm -r "+output_dir+"/fasta_alignment_"+virus_dataset,shell=True)
 
-def clean_run_files(pathTOirma,pathTOrundata,runD):
+def clean_run_files(pathTOirma,pathTOrundata,runD,pathToNextclade):
 
     subprocess.run("rm -r "+pathTOirma+runD,shell=True)
     subprocess.run("rm -r "+pathTOrundata+"/"+runD,shell=True)
+    subprocess.run("rm -r "+pathToNextclade,shell=True)
 
 
 if __name__ == "__main__":

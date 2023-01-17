@@ -60,7 +60,7 @@ class flu_pipeline() :
 
         #delete barcodes + IRMA data
         
-        clean_run_files(minion_path,self.res_dir,run_date)
+        clean_run_files(minion_path,self.res_dir,run_date,self.nextclade_output)
 
 
         print("PipeLine Finished!")
