@@ -6,11 +6,12 @@ import shutil
 
 
 def create_final_report(run_date,path_to_nextclade,nextclade_hits,result_output):
-    pass
+    
     today = date.today().strftime("%b-%d-%Y")
     hits={}
     #could be wirten better
     for key in [*nextclade_hits] :
+        
         hits[key.split("_")[0]] = nextclade_hits[key]
 
 
@@ -37,13 +38,15 @@ def create_final_report(run_date,path_to_nextclade,nextclade_hits,result_output)
 
    
     for line in demo.readlines() :
+        
         #"Influenza_Type","Lineage_ID","Nextclade_Score","WGS_Run_Date","Report_Generation_Date"
         line = line.strip().split(",")
         hsn = line[0]
-        
-                                #flu type                  #linageID            #score
-        report_line = line + hits[hsn][:] + [nextclade_dict[hsn][0]] + [nextclade_dict[hsn][1]]+ [run_date] + [today]
-
+        if len(hits[hsn])>0:
+                                    #flu type                  #linageID            #score
+            report_line = line + hits[hsn][:] + [nextclade_dict[hsn][0]] + [nextclade_dict[hsn][1]]+ [run_date] + [today]
+        else:
+            report_line = line + ["NO HITS"] + ["NA"] + ["NA"]+ [run_date] + [today]
 
         report.write("\t".join(report_line)+"\n")
     demo.close()
