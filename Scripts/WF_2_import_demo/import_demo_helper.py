@@ -27,7 +27,7 @@ class demographics_import():
     def get_lims_demographics(self,hsn,report_dir): #1
         #HSN_WGSRUNDATE_INDEX_
         date= hsn[0].split("_")[1]
-        self.wgs_run_date = date
+        self.wgs_run_date = date[:2]+"/"+date[2:4]+"/20"+date[4:]
         #base_dict={"FluB_detected":"","FluA_detected":"","FluAH3":"","FluA2009_H1N1":""}
         base_dict={"Influenza B":"","Influenza A":"","Influenza A/H3":"","Influenza 2009 A/H1N1":""}
         #making sure only HSN and cutting other stuff in the array
@@ -41,14 +41,16 @@ class demographics_import():
         query_pcr="select HSN,ANALYTE,NUMERICRESULT from FLUWGSDEMO where HSN in ("+",".join(hsn)+") and NUMERICRESULT <> 1000"
         query="select HSN,REPORT_DATE,RECEIVE_DATE,COLLECT_DATE,NAME,COUNTY,STATE,DOB,GENDER,RACE,ETHNICITY,MATRIX,CLIENTID,CLIENTNAME from FLUWGSDEMO where HSN in ("+",".join(hsn)+") GROUP BY HSN,REPORT_DATE,RECEIVE_DATE,COLLECT_DATE,NAME,COUNTY,STATE,DOB,GENDER,RACE,ETHNICITY,MATRIX,CLIENTID,CLIENTNAME"
         self.lims_df = pd.read_sql(query,conn)
+        
         for flu in base_dict:
             self.lims_df[flu] = "Null"
         
-        found_hsn = self.lims_df['HSN'].values.tolist()
-
+        found_hsn = [ str(i) for i in self.lims_df['HSN'].values.tolist() ]
+        
         for h in hsn: #if no demographical information add a blank line
             if h not in found_hsn :
-                self.lims_df.loc[len(self.lims_df)] = [h,"","","","NO NAME","","","","","","","","",""]
+                print(str(h)+" not found in lims df")
+                self.lims_df.loc[len(self.lims_df)] = [h,"","","","NO NAME","","","","","","","","","","","","",""]
                 
 
         if not os.path.exists(report_dir+"/"+date):

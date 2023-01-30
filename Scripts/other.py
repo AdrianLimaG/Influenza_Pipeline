@@ -107,7 +107,8 @@ def parse_seq_id(row, arg):
         elif arg == "run_num":
             return int(seq_id[3])
         elif arg == "date":
-            return seq_id[2]
+            #return seq_id[2]
+            return seq_id[2][:2]+"/"+seq_id[2][2:4]+"/"+"20"+seq_id[2][4:]
         else:
             raise ValueError("Bad argument to parse_seq_id --> folder")
     else:
@@ -122,7 +123,8 @@ def parse_seq_id(row, arg):
         elif arg == "run_num":
             return int(seq_id[5])
         elif arg == "date":
-            return seq_id[1]
+            #return seq_id[1]
+            return seq_id[1][:2]+"/"+seq_id[1][2:4]+"/"+"20"+seq_id[1][4:]
         else:
             raise ValueError("Bad argument to parse_seq_id --> file")
 

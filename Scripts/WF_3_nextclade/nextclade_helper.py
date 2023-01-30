@@ -144,11 +144,11 @@ class nextclade_data_obj():
                 df=df,
                 col_lst=self.add_col_lst,
                 col_func_map=self.col_func_map)
-
+            
             df.rename(columns={"day_run_num_var":"day_run_num",
                 "wgs_run_date_var":"wgs_run_date",
                 "machine_num_var":"machine_num"}, inplace=True)
-
+            
             df.fillna("", inplace=True)
             self.df_qc = df[self.nc_qc_cols_lst]
             self.df_results = df[self.nc_results_cols_lst]

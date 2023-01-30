@@ -30,7 +30,7 @@ def move_results(samples,irma_output_dir,results_dir):
         subprocess.run("mkdir "+results_dir,shell=True)
 
     for sample in samples:
-        subprocess.run("mv "+irma_output_dir+"/"+sample+" "+results_dir, shell=True)
+        subprocess.run("mv "+irma_output_dir+"/"+sample+" "+results_dir+"/"+sample, shell=True)
 
 def sample_metrics(list_samples,sample_path,resource_path):
     #This functions calculates WGS depth + coverage an anverage across all aligned proteins

@@ -33,12 +33,14 @@ def create_final_report(run_date,path_to_nextclade,nextclade_hits,result_output)
         l=l.strip()
         l=l.split("\t")
         nextclade_dict[l[0].split("_")[0]]=l[1],l[3]
+    print(nextclade_dict)
 
    
     for line in demo.readlines() :
         #"Influenza_Type","Lineage_ID","Nextclade_Score","WGS_Run_Date","Report_Generation_Date"
         line = line.strip().split(",")
         hsn = line[0]
+        
                                 #flu type                  #linageID            #score
         report_line = line + hits[hsn][:] + [nextclade_dict[hsn][0]] + [nextclade_dict[hsn][1]]+ [run_date] + [today]
 
