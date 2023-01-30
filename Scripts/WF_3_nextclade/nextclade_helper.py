@@ -59,7 +59,8 @@ def concat_fasta(sample_n,path_to_files):
     fastq = os.listdir(path_to_files)
     fastq_s = (" "+path_to_files+"/").join(['',*fastq])
     if os.path.exists(path_to_files):
-        output= subprocess.run("cat "+fastq_s+" > "+path_to_files+"/"+sample_n+"_combined.fasta",shell=True)
+        if not os.path.exists(path_to_files+"/"+sample_n+"_combined.fasta") :
+            output= subprocess.run("cat "+fastq_s+" > "+path_to_files+"/"+sample_n+"_combined.fasta",shell=True)
 
         return path_to_files+"/"+sample_n+"_combined.fasta"
     else:

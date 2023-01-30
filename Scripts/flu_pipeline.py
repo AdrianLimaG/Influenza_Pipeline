@@ -30,9 +30,9 @@ class flu_pipeline() :
         #Step 0 merge  fasta files
         fastq_paths_dic = merge_seq_fastq(minion_path,sample_sheet_p)
         print("Merging Completing")
-        
+
         # #Step 1 run irma for allignment
-        irma_runner(fastq_paths_dic,self.dir_path,self.res_dir) 
+        irma_runner(fastq_paths_dic,self.dir_path,self.res_dir,self.irma_out) 
         print("IRMA Completing")
 
         #Step 2 Import Demographics
