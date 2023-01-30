@@ -45,6 +45,7 @@ _______________________________________
 
 ### **Workflow 3:** [Run Nextclade](docs/WF_3_nextclade.md)
  - Run Nextcalde to determine clade of seqeunced influenza virus
+ - Check against Influenza A h3n2,h1n1pdm types (can be modified to include FLU B)
  - Parse the nextcalde data
  - Push the Nextclade data to Influenza DB MS SQL database.
    
@@ -64,6 +65,9 @@ _______________________________________
  - Ask user for search to perform
  - Takes both Nextclade results and demographic information and builds report 
  - Formats consense fasta files
+ - Aligns samples to referance Influenza A h3n2,h1n1pdm type based on nextclade restuls
+ - Builds phylogenetic tree for each influenza A types based on alignement files
+ - Cleans ups intermediate files
 
 
 <br />
