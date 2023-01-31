@@ -110,9 +110,12 @@ def create_phylogentic_tree(output_dir,runD):
 
 def clean_run_files(pathTOirma,pathTOrundata,runD,pathToNextclade):
 
-    subprocess.run("rm -r "+pathTOirma+runD,shell=True)
-    subprocess.run("rm -r "+pathTOrundata+"/"+runD,shell=True)
+    subprocess.run("rm -r "+pathTOirma,shell=True)
+    print("removed IRMA")
+    subprocess.run("rm -r "+pathTOrundata,shell=True)
+    print("removed Raw Data")
     subprocess.run("rm -r "+pathToNextclade,shell=True)
+    print("Removed Nextclade data")
 
 
 if __name__ == "__main__":
